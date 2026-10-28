@@ -64,6 +64,7 @@ a{color:inherit}
 .brand span{color:var(--accent);text-shadow:0 0 18px var(--accent)}
 .hubs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;min-width:0;padding:3px;border-radius:999px;background:rgba(0,0,0,.22);box-shadow:inset 0 1px 2px rgba(0,0,0,.4)}
 .hubs::-webkit-scrollbar{display:none}
+.loading[hidden]{display:none!important}
 .qnotes{width:100%;min-height:150px;resize:vertical;background:transparent;border:1px solid var(--line, rgba(255,255,255,.12));border-radius:12px;padding:12px 14px;color:inherit;font:inherit;line-height:1.6;outline:none}
 .hubbtn.ext::after{content:'↗';margin-left:6px;opacity:.6}
 .hubbtn{background:none;border:1px solid transparent;border-radius:999px;padding:7px 14px;font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:8px;transition:color .2s,background .3s}
@@ -662,7 +663,8 @@ window.CONFIG={
   "variant": "wellness"
 };
 window.__DEMO={"wl_habits": [{"id": "bed", "name": "Make bed", "group": "Morning", "days": [1, 1, 1, 1, 1, 1, 1], "active": true, "steps": [], "products": []}, {"id": "sun", "name": "Morning sunlight (10 min)", "group": "Morning", "days": [1, 1, 1, 1, 1, 1, 1], "active": true, "steps": ["Step outside within an hour of waking.", "No sunglasses, 10 minutes, longer if it's cloudy."], "products": []}, {"id": "vit", "name": "Vitamins", "group": "Morning", "days": [1, 1, 1, 1, 1, 1, 1], "active": true, "steps": ["Take them with breakfast.", "Add your own list here."], "products": []}, {"id": "mob", "name": "Stretches (12 min)", "group": "Morning", "days": [1, 1, 1, 1, 1, 1, 1], "active": true, "steps": ["Cat-cow × 10.", "Low-lunge hip flexor stretch, 45 s each side.", "Half split, 45 s each side.", "Figure-4 for the outer hip.", "Butterfly, 1 min."], "products": ["Yoga mat"]}, {"id": "am", "name": "AM skincare", "group": "Morning", "days": [1, 1, 1, 1, 1, 1, 1], "active": true, "steps": ["Cleanse.", "Vitamin C.", "Moisturizer, then SPF."], "products": []}, {"id": "face", "name": "Face massage (10 min)", "group": "Morning", "days": [1, 0, 1, 0, 1, 0, 1], "active": true, "steps": ["Neck and shoulders first.", "Jaw, then lift under the cheekbones.", "Light circles around the eyes, sweep to the temples.", "Sweep down the neck × 5."], "products": ["Facial oil"]}, {"id": "hair", "name": "Hair wash", "group": "Shower", "days": [1, 0, 0, 1, 0, 0, 0], "active": true, "steps": ["Shampoo the scalp twice.", "Condition mid-lengths to ends.", "Leave-in with heat protection."], "products": []}, {"id": "scrub", "name": "Body scrub", "group": "Shower", "days": [0, 1, 0, 0, 0, 1, 0], "active": true, "steps": [], "products": []}, {"id": "pm", "name": "PM skincare", "group": "Evening", "days": [1, 1, 1, 1, 1, 1, 1], "active": true, "steps": ["Cleanse.", "Treatment serum.", "Moisturizer."], "products": []}, {"id": "plan", "name": "Plan tomorrow", "group": "Evening", "days": [1, 1, 1, 1, 1, 1, 1], "active": true, "steps": ["Pick tomorrow's top 3 priorities.", "Check the calendar."], "products": []}, {"id": "read", "name": "Read 20 pages", "group": "Evening", "days": [1, 1, 1, 1, 1, 1, 1], "active": true, "steps": [], "products": []}, {"id": "water", "name": "Water", "group": "Anytime", "days": [1, 1, 1, 1, 1, 1, 1], "active": true, "steps": [], "products": []}, {"id": "steps", "name": "8K steps", "group": "Anytime", "days": [1, 1, 1, 1, 1, 1, 1], "active": true, "steps": [], "products": []}], "wl_beauty": {"services": [{"id": "hair", "name": "Hair appointment", "kind": "recurring", "interval": "8", "provider": "Your salon", "notes": ""}, {"id": "nails", "name": "Nails", "kind": "recurring", "interval": "3", "provider": "", "notes": ""}, {"id": "brows", "name": "Brows", "kind": "recurring", "interval": "5", "provider": "", "notes": ""}, {"id": "lash", "name": "Lash lift", "kind": "want", "status": "Want to try", "notes": "Ask about aftercare."}], "log": [{"id": "lg1", "service": "hair", "date": "2026-09-28", "notes": "Gloss + trim"}], "appts": []}, "wl_extras": []};
-window.__DEMO_CAL=[];</script>
+window.__DEMO_CAL=[];
+window.__DEMO_INBOX=[];</script>
 <script>
 (function(){
 'use strict';
@@ -676,7 +678,11 @@ const HUBS = {
   work:   {label:'Work', color:'var(--work)', groups:[
     ['', [['ventures','Ventures',null],['money','Money','money']]],
   ]},
-  social: {label:'Social', color:'var(--social)', off:true, groups:[]},
+  social: {label:'Social Studio', short:'Studio', color:'var(--social)', off: CONFIG.variant !== 'social', groups:[
+    ['', [['studio','Studio',null],['partners','Partners & Affiliate',null],['calendar','Content Calendar','content-calendar']]],
+    ['Platforms', [['instagram','Instagram','instagram'],['tiktok','TikTok','tiktok'],['youtube','YouTube','youtube']]],
+    ['Growth', [['deals','Brand Deals','brand-deals'],['inspo','Inspo Board','inspo'],['analytics','Analytics','analytics']]],
+  ]},
   life:   {label:'Life', color:'var(--life)', groups:[
     ['Personal', [['plans','Plans',null],['diary','Diary','diary'],['notes','Notes','notes'],['vision','Vision Board','vision-board'],['prayer','Prayer','prayer'],['library','Books & Media','library']]],
     ['Wellness', [['wellness','Routines & Beauty',null]]],
@@ -693,12 +699,12 @@ for (const [hub, h] of Object.entries(HUBS)) {
     if (src) BYSRC[src] = id;
   }));
 }
-const INCLUDE = {all:['hq','work','life'], wellness:['life']}[CONFIG.variant] || ['hq','work','life'];
+const INCLUDE = {all:['hq','work','life'], wellness:['life'], social:['social']}[CONFIG.variant] || ['hq','work','life'];
 if (INCLUDE.includes('hq')) ROUTES.hq = {hub:'hq'};
 for (const k of Object.keys(HUBS)) if (!INCLUDE.includes(k)) HUBS[k].ext = (CONFIG.links || {})[k] || '';
 for (const id of Object.keys(ROUTES)) if (!INCLUDE.includes(ROUTES[id].hub) || (CONFIG.variant === 'wellness' && id !== 'life-wellness')) delete ROUTES[id];
 if (CONFIG.variant === 'wellness') { HUBS.life.label = 'Wellness'; HUBS.life.groups = [['', [['wellness','Routines & Beauty',null]]]]; }
-const FIRST = {work:'work-ventures', social:'work-ventures', life: CONFIG.variant === 'wellness' ? 'life-wellness' : 'life-plans'};
+const FIRST = {work:'work-ventures', social: CONFIG.variant === 'social' ? 'social-studio' : 'work-ventures', life: CONFIG.variant === 'wellness' ? 'life-wellness' : 'life-plans'};
 const DEFAULT_ROUTE = INCLUDE.includes('hq') ? 'hq' : FIRST[INCLUDE[0]];
 const HOME_OF = src => {
   if (src === 'life-wellness') return 'life-wellness';
@@ -924,6 +930,7 @@ const TODO_SOURCES = [
   {key:'biz_cotech_todos', label:'Work', hub:'work', route:'work-ventures'},
   {key:'biz_entertainment_todos', label:'Work', hub:'work', route:'work-ventures'},
   {key:'life_personal_todos', label:'Life', hub:'life', route:'life-plans'},
+  {key:'biz_social_todos', label:'Social', hub:'social', route:'social-partners'},
 ];
 const readJSON = (k, d) => { try { const v = KV[k]; return v ? JSON.parse(v) : d; } catch(e){ return d; } };
 function openTodos(){
@@ -972,12 +979,14 @@ const AREAS = {
   social: [['studio','Studio']],
   life:   [['personal','Personal'],['diary','Diary'],['wellness','Wellness'],['social-life','Social Life'],['elevation','Elevation']],
 };
+if (CONFIG.variant === 'social') { delete AREAS.work; delete AREAS.life; }
 const AREA_ROUTE = {'work/companies':'work-companies','work/entertainment':'work-entertainment','social/studio':'social-studio',
   'life/personal':'life-personal','life/diary':'life-diary','life/wellness':'life-wellness','life/social-life':'life-social','life/elevation':'life-elevation'};
 const AREA_TODO = {'work/companies':'biz_cotech_todos','work/entertainment':'biz_entertainment_todos','social/studio':'biz_social_todos','life/elevation':'biz_elevation_todos'};
 const LIFE_CO = {diary:'Diary', 'social-life':'Calendar'};
 const ACCOUNTS = CONFIG.accounts;
-let INBOX = [];         // [{id, ...data}]
+let INBOX = [];
+if (CONFIG.variant === 'social' && /[?&]demo\b/.test(location.search) && window.__DEMO_INBOX) INBOX = window.__DEMO_INBOX.map(x => ({archived:false, actions:{}, status:'done', hub:'social', area:'studio', ...x}));         // [{id, ...data}]
 let hqFilter = 'all', studioAcct = null;
 const routeKey = it => (it.hub || 'life') + '/' + (it.area || '');
 const routeLabel = it => { const a = (AREAS[it.hub]||[]).find(x => x[0] === it.area); return (HUBS[it.hub]?.label || '') + (a && it.hub !== 'social' ? ' · ' + a[1] : ''); };
@@ -1011,6 +1020,7 @@ function mountComposer(id, hint){
   const host = $('#composer-' + id);
   host.innerHTML = composerHTML(id);
   if (hint) $('#cs-' + id).value = hint;
+  if (CONFIG.variant === 'social') { $('#cs-' + id).value = 'social'; $('#cs-' + id).hidden = true; $('#cb-' + id).textContent = 'Break it down'; }
   const f = $('#cfile-' + id), th = $('#cth-' + id);
   f.addEventListener('change', () => {
     const file = f.files && f.files[0];
@@ -1059,7 +1069,7 @@ Their social accounts: ${ACCOUNTS.map(a => a[0]).join(', ')}.
 Where items can go (hub / area):
 - work / companies: ${CONFIG.areas.companies}
 - work / entertainment: ${CONFIG.areas.creative}
-- life / personal, life / diary, life / wellness (fitness, skincare, food, sleep), life / social-life (events, parties, friends), life / elevation (learning, money, investing, culture, books, courses)
+${CONFIG.variant === 'social' ? '- social / studio: content ideas, trends, formats, hooks, inspiration and creators to learn from, for one of their accounts\n' : ''}- life / personal, life / diary, life / wellness (fitness, skincare, food, sleep), life / social-life (events, parties, friends), life / elevation (learning, money, investing, culture, books, courses)
 ${d.hint && d.hint !== 'auto' ? `\nThey asked for this to go to the "${d.hint}" hub; pick the best area inside it.` : ''}
 
 The item they dropped in:
@@ -1067,7 +1077,7 @@ The item they dropped in:
 ${d.text || '(no text)'}
 """
 ${d.hasImage ? 'A screenshot is attached; read it.' : ''}
-You cannot open links. If all you have is a bare link with no caption, note, or screenshot, say so plainly in the summary and do not invent what the video or page contains; base everything on what she wrote.
+You cannot open links. If all you have is a bare link with no caption, note, or screenshot, say so plainly in the summary and do not invent what the video or page contains; base everything on what they wrote.
 
 Reply with only one JSON object:
 {"kind":"tiktok|video|post|article|product|event|person|idea|task|note|other",
@@ -1977,7 +1987,7 @@ go(ROUTES[startRoute] ? startRoute : DEFAULT_ROUTE);
 function useLocal(reason){
   mode = 'local';
   try { Object.assign(KV, JSON.parse(localStorage.getItem('ptc_' + CONFIG.variant + '_kv') || '{}')); } catch(e){}
-  if (/[?&]demo\b/.test(location.search) && window.__DEMO) for (const [k, v] of Object.entries(window.__DEMO)) if (KV[k] == null) KV[k] = (typeof v === 'string' ? v : JSON.stringify(v)).split('__TODAY__').join(new Date().toLocaleDateString('en-CA'));
+  if (/[?&]demo\b/.test(location.search) && window.__DEMO) for (const [k, v] of Object.entries(window.__DEMO)) if (KV[k] == null) KV[k] = (typeof v === 'string' ? v : JSON.stringify(v)).replace(/__TODAY(?:_P(\d+))?__/g, (m, n) => { const t = new Date(); t.setDate(t.getDate() + (+n || 0)); return t.toLocaleDateString('en-CA'); });
   if (KV.hq_brief) KV.hq_brief = String(KV.hq_brief).replace('__TODAY__', new Date().toLocaleDateString('en-CA'));
   setSync(reason, true);
   kvReadyResolve(); renderInboxViews(); if (current === 'hq') renderHQ();
